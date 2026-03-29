@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Áudio Descrição</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      padding: 40px;
+    }
+    button {
+      font-size: 20px;
+      padding: 15px 30px;
+      margin-top: 20px;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Áudio descrição</h1>
+  <p id="msg">Carregando áudio...</p>
+
+  <audio id="audio">
+    <source src="audio.mp3" type="audio/mpeg">
+  </audio>
+
+  <button onclick="tocarAudio()">▶️ Ouvir descrição</button>
+
+  <script>
+    const audio = document.getElementById("audio");
+    const msg = document.getElementById("msg");
+
+    function tocarAudio() {
+      audio.play();
+    }
+
+    
+    window.onload = () => {
+      audio.play().then(() => {
+        msg.innerText = "Reproduzindo automaticamente...";
+      }).catch(() => {
+        msg.innerText = "Toque em qualquer lugar ou no botão para ouvir.";
+        document.body.onclick = () => audio.play();
+      });
+    };
+  </script>
+
+</body>
+</html>
