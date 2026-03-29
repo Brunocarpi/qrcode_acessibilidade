@@ -8,6 +8,7 @@
       font-family: Arial, sans-serif;
       text-align: center;
       padding: 40px;
+      cursor: pointer;
     }
     button {
       font-size: 20px;
@@ -21,30 +22,38 @@
   <h1>Áudio descrição</h1>
   <p id="msg">Carregando áudio...</p>
 
-  <audio id="audio">
-    <source src="audio.mp3" type="audio/mpeg">
-  </audio>
-
-  <button onclick="tocarAudio()">▶️ Ouvir descrição</button>
+  <audio id="audio" autoplay muted playsinline>
+  <source src="audio.mp3" type="audio/mpeg">
+</audio>
 
   <script>
-    const audio = document.getElementById("audio");
-    const msg = document.getElementById("msg");
+  const audio = document.getElementById("audio");
+  const msg = document.getElementById("msg");
 
-    function tocarAudio() {
-      audio.play();
-    }
+  function tocarAudio() {
+    audio.muted = false;
+    audio.currentTime = 0;
 
-    
-    window.onload = () => {
-      audio.play().then(() => {
-        msg.innerText = "Reproduzindo automaticamente...";
-      }).catch(() => {
-        msg.innerText = "Toque em qualquer lugar ou no botão para ouvir.";
-        document.body.onclick = () => audio.play();
-      });
-    };
-  </script>
+    audio.play();
+    msg.innerText = "Reproduzindo...";
+  }
+
+  
+  audio.addEventListener("ended", () => {
+    msg.innerText = "Toque em qualquer lugar da tela para ouvir a descrição.";
+  });
+
+  
+  window.addEventListener("load", () => {
+    audio.play().catch(() => {
+      msg.innerText = "Toque em qualquer lugar da tela para ouvir a descrição.";
+    });
+  });
+
+  
+  document.addEventListener("click", tocarAudio);
+  document.addEventListener("touchstart", tocarAudio);
+</script>
 
 </body>
 </html>
