@@ -10,11 +10,6 @@
       padding: 40px;
       cursor: pointer;
     }
-    button {
-      font-size: 20px;
-      padding: 15px 30px;
-      margin-top: 20px;
-    }
   </style>
 </head>
 <body>
@@ -22,38 +17,71 @@
   <h1>Áudio descrição</h1>
   <p id="msg">Carregando áudio...</p>
 
-  <audio id="audio" autoplay muted playsinline>
-  <source src="audio.mp3" type="audio/mpeg">
-</audio>
+  <audio id="audio" autoplay muted playsinline></audio>
 
   <script>
-  const audio = document.getElementById("audio");
-  const msg = document.getElementById("msg");
+    const audio = document.getElementById("audio");
+    const msg = document.getElementById("msg");
 
-  function tocarAudio() {
-    audio.muted = false;
-    audio.currentTime = 0;
+    let ultimoToque = 0;
+    const delayDuplo = 400; 
 
-    audio.play();
-    msg.innerText = "Reproduzindo...";
-  }
+    function tocarDescricao() {
+      audio.src = "descricao.mp3";
+      audio.muted = false;
+      audio.currentTime = 0;
+      audio.play();
 
-  
-  audio.addEventListener("ended", () => {
-    msg.innerText = "Toque em qualquer lugar da tela para ouvir a descrição.";
-  });
+      msg.innerText = "Reproduzindo descrição...";
+    }
 
-  
-  window.addEventListener("load", () => {
-    audio.play().catch(() => {
-      msg.innerText = "Toque em qualquer lugar da tela para ouvir a descrição.";
+    function tocarNutricional() {
+      audio.src = "nutricional.mp3";
+      audio.muted = false;
+      audio.currentTime = 0;
+      audio.play();
+
+      msg.innerText = "Reproduzindo tabela nutricional...";
+    }
+
+    function detectarToque() {
+      const agora = new Date().getTime();
+
+      if (agora - ultimoToque < delayDuplo) {
+        
+        tocarNutricional();
+      } else {
+        
+        setTimeout(() => {
+          if (new Date().getTime() - ultimoToque >= delayDuplo) {
+            tocarDescricao();
+          }
+        }, delayDuplo);
+      }
+
+      ultimoToque = agora;
+    }
+
+    
+    audio.addEventListener("ended", () => {
+      msg.innerText = "Toque uma vez para ouvir a descrição ou duas vezes para tabela nutricional.";
     });
-  });
 
-  
-  document.addEventListener("click", tocarAudio);
-  document.addEventListener("touchstart", tocarAudio);
-</script>
+    
+    window.addEventListener("load", () => {
+      audio.src = "descricao.mp3";
+
+      audio.play().then(() => {
+        audio.muted = false;
+      }).catch(() => {
+        msg.innerText = "Toque na tela para começar.";
+      });
+    });
+
+    
+    // document.addEventListener("click", detectarToque);
+    document.addEventListener("pointerdown", detectarToque);
+  </script>
 
 </body>
 </html>
